@@ -1,0 +1,35 @@
+test:
+  name: Fabric Performance Test
+  description: A performance test on Hyperledger Fabric network.
+  clients:
+    type: local
+    number: 2
+
+  rounds:
+    - label: createDonor
+      description: Test creating donors on the network.
+      txNumber: 100
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 10
+      workload:
+        module: workload.js
+        arguments:
+          channel: channel1
+          contractName: bloodchain
+          function: createDonor
+          args:
+            - "A1"
+            - "ALI"
+            - "Trans"
+            - "AB+"
+            - "2018-04-15"
+            - "0918290182801"
+            - "0307665155165"
+            - "aba@aba.com"
+            - "180"
+            - "140"
+            - "Punjab"
+            - "GRW"
+            - "true"

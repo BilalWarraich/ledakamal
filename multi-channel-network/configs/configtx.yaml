@@ -1,0 +1,277 @@
+################################################################################
+#
+#   Section: Organizations
+#
+################################################################################
+Organizations:
+  - &OrdererOrg
+    Name: OrdererOrg
+    ID: OrdererMSP
+    MSPDir: ../organizations/ordererOrganizations/example.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('OrdererMSP.member')"
+      Writers:
+        Type: Signature
+        Rule: "OR('OrdererMSP.member')"
+      Admins:
+        Type: Signature
+        Rule: "OR('OrdererMSP.admin')"
+    OrdererEndpoints:
+      - orderer.example.com:7050
+
+  - &BloodCollection
+    Name: BloodCollectionMSP
+    ID: BloodCollectionMSP
+    MSPDir: ../organizations/peerOrganizations/bloodcollection.example.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('BloodCollectionMSP.admin', 'BloodCollectionMSP.peer', 'BloodCollectionMSP.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('BloodCollectionMSP.admin', 'BloodCollectionMSP.peer', 'BloodCollectionMSP.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('BloodCollectionMSP.admin')"
+    AnchorPeers:
+      - Host: peer0.bloodcollection.example.com
+        Port: 7051
+
+  - &BloodProcessing
+    Name: BloodProcessingMSP
+    ID: BloodProcessingMSP
+    MSPDir: ../organizations/peerOrganizations/bloodprocessing.example.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('BloodProcessingMSP.admin', 'BloodProcessingMSP.peer', 'BloodProcessingMSP.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('BloodProcessingMSP.admin', 'BloodProcessingMSP.peer', 'BloodProcessingMSP.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('BloodProcessingMSP.admin')"
+    AnchorPeers:
+      - Host: peer0.bloodprocessing.example.com
+        Port: 8051
+
+  - &BloodBank
+    Name: BloodBankMSP
+    ID: BloodBankMSP
+    MSPDir: ../organizations/peerOrganizations/bloodbank.example.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('BloodBankMSP.admin', 'BloodBankMSP.peer', 'BloodBankMSP.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('BloodBankMSP.admin', 'BloodBankMSP.peer', 'BloodBankMSP.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('BloodBankMSP.admin')"
+    AnchorPeers:
+      - Host: peer0.bloodbank.example.com
+        Port: 9051
+
+  - &Hospitals
+    Name: HospitalsMSP
+    ID: HospitalsMSP
+    MSPDir: ../organizations/peerOrganizations/hospitals.example.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('HospitalsMSP.admin', 'HospitalsMSP.peer', 'HospitalsMSP.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('HospitalsMSP.admin', 'HospitalsMSP.peer', 'HospitalsMSP.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('HospitalsMSP.admin')"
+    AnchorPeers:
+      - Host: peer0.hospitals.example.com
+        Port: 10051
+
+  - &Transportation
+    Name: TransportationMSP
+    ID: TransportationMSP
+    MSPDir: ../organizations/peerOrganizations/transportation.example.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('TransportationMSP.admin', 'TransportationMSP.peer', 'TransportationMSP.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('TransportationMSP.admin', 'TransportationMSP.peer', 'TransportationMSP.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('TransportationMSP.admin')"
+    AnchorPeers:
+      - Host: peer0.transportation.example.com
+        Port: 11051
+
+################################################################################
+#
+#   SECTION: Capabilities
+#
+################################################################################
+Capabilities:
+  Channel: &ChannelCapabilities
+    V2_0: true
+
+  Orderer: &OrdererCapabilities
+    V2_0: true
+
+  Application: &ApplicationCapabilities
+    V2_5: true
+
+################################################################################
+#
+#   SECTION: Application
+#
+################################################################################
+Application: &ApplicationDefaults
+  Organizations:
+  Policies:
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+    Writers:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+    Admins:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Admins"
+    LifecycleEndorsement:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Endorsement"
+    Endorsement:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Endorsement"
+  Capabilities:
+    <<: *ApplicationCapabilities
+
+################################################################################
+#
+#   SECTION: Orderer
+#
+################################################################################
+Orderer: &OrdererDefaults
+  Addresses:
+    - orderer.example.com:7050
+  BatchTimeout: 2s
+  BatchSize:
+    MaxMessageCount: 10
+    AbsoluteMaxBytes: 99 MB
+    PreferredMaxBytes: 512 KB
+  Organizations:
+  Policies:
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+    Writers:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+    Admins:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Admins"
+    BlockValidation:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+
+################################################################################
+#
+#   CHANNEL
+#
+################################################################################
+Channel: &ChannelDefaults
+  Policies:
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+    Writers:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+    Admins:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Admins"
+  Capabilities:
+    <<: *ChannelCapabilities
+
+################################################################################
+#
+#   PROFILES
+#
+################################################################################
+Profiles:
+
+  # System channel definition
+  SampleMultiNodeEtcdRaft:
+    <<: *ChannelDefaults
+    Orderer:
+      <<: *OrdererDefaults
+      OrdererType: etcdraft
+      EtcdRaft:
+        Consenters:
+          - Host: orderer.example.com
+            Port: 7050
+            ClientTLSCert: ../organizations/ordererOrganizations/example.com/orderers/orderer.example.com/tls/server.crt
+            ServerTLSCert: ../organizations/ordererOrganizations/example.com/orderers/orderer.example.com/tls/server.crt
+      Organizations:
+        - *OrdererOrg
+    Consortiums:
+      SampleConsortium:
+        Organizations:
+          - *BloodCollection
+          - *BloodProcessing
+          - *BloodBank
+          - *Hospitals
+          - *Transportation
+
+  BloodChannel1:
+    <<: *ChannelDefaults
+    Orderer:
+      <<: *OrdererDefaults
+      OrdererType: etcdraft
+      EtcdRaft:
+        Consenters:
+          - Host: orderer.example.com
+            Port: 7050
+            ClientTLSCert: ../organizations/ordererOrganizations/example.com/orderers/orderer.example.com/tls/server.crt
+            ServerTLSCert: ../organizations/ordererOrganizations/example.com/orderers/orderer.example.com/tls/server.crt
+      Organizations:
+        - *OrdererOrg
+      Capabilities: *OrdererCapabilities
+    Consortium: SampleConsortium
+    Application:
+      <<: *ApplicationDefaults
+      Organizations:
+        - *BloodCollection
+        - *BloodProcessing
+        - *BloodBank
+      Capabilities: *ApplicationCapabilities
+
+  BloodChannel2:
+    <<: *ChannelDefaults
+    Orderer:
+      <<: *OrdererDefaults
+      OrdererType: etcdraft
+      EtcdRaft:
+        Consenters:
+          - Host: orderer.example.com
+            Port: 7050
+            ClientTLSCert: ../organizations/ordererOrganizations/example.com/orderers/orderer.example.com/tls/server.crt
+            ServerTLSCert: ../organizations/ordererOrganizations/example.com/orderers/orderer.example.com/tls/server.crt
+      Organizations:
+        - *OrdererOrg
+      Capabilities: *OrdererCapabilities
+    Consortium: SampleConsortium
+    Application:
+      <<: *ApplicationDefaults
+      Organizations:
+        - *BloodBank
+        - *Hospitals
+        - *Transportation
+      Capabilities: *ApplicationCapabilities
+

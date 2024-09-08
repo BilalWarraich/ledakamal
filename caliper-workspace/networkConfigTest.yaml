@@ -1,0 +1,265 @@
+name: fabric_test_network
+version: "2.0.0"  # Caliper expects version 2.x format for Fabric networks
+
+caliper:
+  blockchain: fabric
+
+channels:
+  channel1:
+    created: true
+    orderers:
+      - orderer.example.com
+    peers:
+      peer0.bloodcollection.example.com:
+        endorsingPeer: true
+        chaincodeQuery: true
+        ledgerQuery: true
+        eventSource: true
+      peer1.bloodcollection.example.com:
+        endorsingPeer: true
+        chaincodeQuery: true
+        ledgerQuery: true
+        eventSource: true
+      peer0.bloodprocessing.example.com:
+        endorsingPeer: true
+        chaincodeQuery: true
+        ledgerQuery: true
+        eventSource: true
+      peer1.bloodprocessing.example.com:
+        endorsingPeer: true
+        chaincodeQuery: true
+        ledgerQuery: true
+        eventSource: true
+      peer0.bloodbank.example.com:
+        endorsingPeer: true
+        chaincodeQuery: true
+        ledgerQuery: true
+        eventSource: true
+      peer1.bloodbank.example.com:
+        endorsingPeer: true
+        chaincodeQuery: true
+        ledgerQuery: true
+        eventSource: true
+    chaincodes:
+      - id: bloodchain
+        version: "1.0"
+        language: golang
+        path: ${PWD}/../chaincode/blockchain/chaincode
+        label: bloodchain
+
+  channel2:
+    created: true
+    orderers:
+      - orderer2.example.com
+    peers:
+      peer0.hospital.example.com:
+        endorsingPeer: true
+        chaincodeQuery: true
+        ledgerQuery: true
+        eventSource: true
+      peer1.hospital.example.com:
+        endorsingPeer: true
+        chaincodeQuery: true
+        ledgerQuery: true
+        eventSource: true
+      peer0.transportation.example.com:
+        endorsingPeer: true
+        chaincodeQuery: true
+        ledgerQuery: true
+        eventSource: true
+      peer1.transportation.example.com:
+        endorsingPeer: true
+        chaincodeQuery: true
+        ledgerQuery: true
+        eventSource: true
+      peer0.bloodbank.example.com:
+        endorsingPeer: true
+        chaincodeQuery: true
+        ledgerQuery: true
+        eventSource: true
+      peer1.bloodbank.example.com:
+        endorsingPeer: true
+        chaincodeQuery: true
+        ledgerQuery: true
+        eventSource: true
+    chaincodes:
+      - id: bloodchain
+        version: "1.0"
+        language: golang
+        path: ${PWD}/../chaincode/blockchain/chaincode
+        label: bloodchain
+
+organizations:
+  bloodcollectionMSP:
+    mspid: bloodcollectionMSP
+    peers:
+      - peer0.bloodcollection.example.com
+      - peer1.bloodcollection.example.com
+
+  bloodprocessingMSP:
+    mspid: bloodprocessingMSP
+    peers:
+      - peer0.bloodprocessing.example.com
+      - peer1.bloodprocessing.example.com
+
+  bloodbankMSP:
+    mspid: bloodbankMSP
+    peers:
+      - peer0.bloodbank.example.com
+      - peer1.bloodbank.example.com
+
+  hospitalMSP:
+    mspid: hospitalMSP
+    peers:
+      - peer0.hospital.example.com
+      - peer1.hospital.example.com
+
+  transportationMSP:
+    mspid: transportationMSP
+    peers:
+      - peer0.transportation.example.com
+      - peer1.transportation.example.com
+
+orderers:
+  orderer.example.com:
+    url: grpcs://localhost:7050
+    grpcOptions:
+      ssl-target-name-override: orderer.example.com
+      grpc.keepalive_time_ms: 600000
+    tlsCACerts:
+      path: ${PWD}/../test-network/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+
+  orderer2.example.com:
+    url: grpcs://localhost:8050
+    grpcOptions:
+      ssl-target-name-override: orderer2.example.com
+      grpc.keepalive_time_ms: 600000
+    tlsCACerts:
+      path: ${PWD}/../channel2-network/organizations/ordererOrganizations/example.com/orderers/orderer2.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+
+peers:
+  peer0.bloodcollection.example.com:
+    url: grpcs://localhost:7051
+    grpcOptions:
+      ssl-target-name-override: peer0.bloodcollection.example.com
+      grpc.keepalive_time_ms: 600000
+    tlsCACerts:
+      path: ${PWD}/../test-network/organizations/peerOrganizations/bloodcollection.example.com/peers/peer0.bloodcollection.example.com/tls/ca.crt
+
+  peer1.bloodcollection.example.com:
+    url: grpcs://localhost:8051
+    grpcOptions:
+      ssl-target-name-override: peer1.bloodcollection.example.com
+      grpc.keepalive_time_ms: 600000
+    tlsCACerts:
+      path: ${PWD}/../test-network/organizations/peerOrganizations/bloodcollection.example.com/peers/peer1.bloodcollection.example.com/tls/ca.crt
+
+  peer0.bloodprocessing.example.com:
+    url: grpcs://localhost:9051
+    grpcOptions:
+      ssl-target-name-override: peer0.bloodprocessing.example.com
+      grpc.keepalive_time_ms: 600000
+    tlsCACerts:
+      path: ${PWD}/../test-network/organizations/peerOrganizations/bloodprocessing.example.com/peers/peer0.bloodprocessing.example.com/tls/ca.crt
+
+  peer1.bloodprocessing.example.com:
+    url: grpcs://localhost:10051
+    grpcOptions:
+      ssl-target-name-override: peer1.bloodprocessing.example.com
+      grpc.keepalive_time_ms: 600000
+    tlsCACerts:
+      path: ${PWD}/../test-network/organizations/peerOrganizations/bloodprocessing.example.com/peers/peer1.bloodprocessing.example.com/tls/ca.crt
+
+  peer0.bloodbank.example.com:
+    url: grpcs://localhost:11051
+    grpcOptions:
+      ssl-target-name-override: peer0.bloodbank.example.com
+      grpc.keepalive_time_ms: 600000
+    tlsCACerts:
+      path: ${PWD}/../test-network/organizations/peerOrganizations/bloodbank.example.com/peers/peer0.bloodbank.example.com/tls/ca.crt
+
+  peer1.bloodbank.example.com:
+    url: grpcs://localhost:12051
+    grpcOptions:
+      ssl-target-name-override: peer1.bloodbank.example.com
+      grpc.keepalive_time_ms: 600000
+    tlsCACerts:
+      path: ${PWD}/../test-network/organizations/peerOrganizations/bloodbank.example.com/peers/peer1.bloodbank.example.com/tls/ca.crt
+
+  peer0.hospital.example.com:
+    url: grpcs://localhost:13051
+    grpcOptions:
+      ssl-target-name-override: peer0.hospital.example.com
+      grpc.keepalive_time_ms: 600000
+    tlsCACerts:
+      path: ${PWD}/../channel2-network/organizations/peerOrganizations/hospital.example.com/peers/peer0.hospital.example.com/tls/ca.crt
+
+  peer1.hospital.example.com:
+    url: grpcs://localhost:14051
+    grpcOptions:
+      ssl-target-name-override: peer1.hospital.example.com
+      grpc.keepalive_time_ms: 600000
+    tlsCACerts:
+      path: ${PWD}/../channel2-network/organizations/peerOrganizations/hospital.example.com/peers/peer1.hospital.example.com/tls/ca.crt
+
+  peer0.transportation.example.com:
+    url: grpcs://localhost:15051
+    grpcOptions:
+      ssl-target-name-override: peer0.transportation.example.com
+      grpc.keepalive_time_ms: 600000
+    tlsCACerts:
+      path: ${PWD}/../channel2-network/organizations/peerOrganizations/transportation.example.com/peers/peer0.transportation.example.com/tls/ca.crt
+
+  peer1.transportation.example.com:
+    url: grpcs://localhost:16051
+    grpcOptions:
+      ssl-target-name-override: peer1.transportation.example.com
+      grpc.keepalive_time_ms: 600000
+    tlsCACerts:
+      path: ${PWD}/../channel2-network/organizations/peerOrganizations/transportation.example.com/peers/peer1.transportation.example.com/tls/ca.crt
+
+certificateAuthorities:
+  ca_bloodcollection:
+    url: https://localhost:7054
+    caName: ca-bloodcollection
+    tlsCACerts:
+      path: ${pwd}/../test-network/organizations/peerOrganizations/bloodcollection.example.com/tlsca/tlsca.bloodcollection.example.com-cert.pem
+    registrar:
+      enrollId: admin
+      enrollSecret: adminpw
+
+  ca_bloodprocessing:
+    url: https://localhost:8054
+    caName: ca-bloodprocessing
+    tlsCACerts:
+      path: ${pwd}/../test-network/organizations/peerOrganizations/bloodprocessing.example.com/tlsca/tlsca.bloodprocessing.example.com-cert.pem
+    registrar:
+      enrollId: admin
+      enrollSecret: adminpw
+
+  ca_bloodbank:
+    url: https://localhost:11054
+    caName: ca-bloodbank
+    tlsCACerts:
+      path: ${pwd}/../test-network/organizations/peerOrganizations/bloodbank.example.com/tlsca/tlsca.bloodbank.example.com-cert.pem
+    registrar:
+      enrollId: admin
+      enrollSecret: adminpw
+
+  ca_hospital:
+    url: https://localhost:12054
+    caName: ca-hospital
+    tlsCACerts:
+      path: ${pwd}/../channel2-network/organizations/peerOrganizations/hospital.example.com/tlsca/tlsca.hospital.example.com-cert.pem
+    registrar:
+      enrollId: admin
+      enrollSecret: adminpw
+
+  ca_transportation:
+    url: https://localhost:13054
+    caName: ca-transportation
+    tlsCACerts:
+      path: ${pwd}/../channel2-network/organizations/peerOrganizations/transportation.example.com/tlsca/tlsca.transportation.example.com-cert.pem
+    registrar:
+      enrollId: admin
+      enrollSecret: adminpw

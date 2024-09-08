@@ -1,0 +1,310 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '3.7'
+
+volumes:
+  orderer.example.com:
+  peer0.BloodCollection.example.com:
+  peer1.BloodCollection.example.com:
+  peer0.BloodProcessing.example.com:
+  peer1.BloodProcessing.example.com:
+  peer0.BloodBank.example.com:
+  peer1.BloodBank.example.com:
+  peer0.Hospitals.example.com:
+  peer1.Hospitals.example.com:
+  peer0.Transportation.example.com:
+  peer1.Transportation.example.com:
+
+networks:
+  basic:
+    name: fabric_test
+
+services:
+
+  orderer.example.com:
+    container_name: orderer.example.com
+    image: hyperledger/fabric-orderer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - FABRIC_LOGGING_SPEC=INFO
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_LISTENPORT=7050
+      - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+      - ORDERER_GENERAL_GENESISPROFILE=TwoOrgsOrdererGenesis
+      #- ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/genesis.block
+      # enabled TLS
+      - ORDERER_GENERAL_TLS_ENABLED=true
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_GENERAL_BOOTSTRAPMETHOD=none
+      - ORDERER_CHANNELPARTICIPATION_ENABLED=true
+      - ORDERER_ADMIN_TLS_ENABLED=true
+      - ORDERER_ADMIN_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_ADMIN_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_ADMIN_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_ADMIN_TLS_CLIENTROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_ADMIN_LISTENADDRESS=0.0.0.0:7053
+      - ORDERER_OPERATIONS_LISTENADDRESS=orderer.example.com:9443
+      - ORDERER_METRICS_PROVIDER=prometheus
+    working_dir: /root
+    command: orderer
+    volumes:
+        - ./crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/msp:/var/hyperledger/orderer/msp
+        - ./crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/tls/:/var/hyperledger/orderer/tls
+        - orderer.example.com:/var/hyperledger/production/orderer
+        - ./crypto-config/ordererOrganizations/example.com/users/Admin@example.com/:/var/hyperledger/orderer/admin
+
+       # - ./config/genesis.block:/var/hyperledger/orderer/genesis.block
+    ports:
+      - 7050:7050
+      - 7053:7053
+      - 9443:9443
+    networks:
+      - basic
+
+  peer0.BloodCollection.example.com:
+    container_name: peer0.BloodCollection.example.com
+    image: hyperledger/fabric-peer:latest
+    environment:
+      - CORE_PEER_ID=peer0.BloodCollection.example.com
+      - CORE_PEER_ADDRESS=peer0.BloodCollection.example.com:7051
+      - CORE_PEER_LOCALMSPID=BloodCollectionMSP
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./crypto-config/peerOrganizations/BloodCollection.example.com/peers/peer0.BloodCollection.example.com/msp:/etc/hyperledger/fabric/msp
+        - ./crypto-config/peerOrganizations/BloodCollection.example.com/peers/peer0.BloodCollection.example.com/tls:/etc/hyperledger/fabric/tls
+    ports:
+      - 7051:7051
+    networks:
+      - basic
+
+  peer1.BloodCollection.example.com:
+    container_name: peer1.BloodCollection.example.com
+    image: hyperledger/fabric-peer:latest
+    environment:
+      - CORE_PEER_ID=peer1.BloodCollection.example.com
+      - CORE_PEER_ADDRESS=peer1.BloodCollection.example.com:8051
+      - CORE_PEER_LOCALMSPID=BloodCollectionMSP
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./crypto-config/peerOrganizations/BloodCollection.example.com/peers/peer1.BloodCollection.example.com/msp:/etc/hyperledger/fabric/msp
+        - ./crypto-config/peerOrganizations/BloodCollection.example.com/peers/peer1.BloodCollection.example.com/tls:/etc/hyperledger/fabric/tls
+    ports:
+      - 8051:7051
+    networks:
+      - basic
+
+  peer0.BloodProcessing.example.com:
+    container_name: peer0.BloodProcessing.example.com
+    image: hyperledger/fabric-peer:latest
+    environment:
+      - CORE_PEER_ID=peer0.BloodProcessing.example.com
+      - CORE_PEER_ADDRESS=peer0.BloodProcessing.example.com:7051
+      - CORE_PEER_LOCALMSPID=BloodProcessingMSP
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./crypto-config/peerOrganizations/BloodProcessing.example.com/peers/peer0.BloodProcessing.example.com/msp:/etc/hyperledger/fabric/msp
+        - ./crypto-config/peerOrganizations/BloodProcessing.example.com/peers/peer0.BloodProcessing.example.com/tls:/etc/hyperledger/fabric/tls
+    ports:
+      - 9051:9051
+    networks:
+      - basic
+
+  peer1.BloodProcessing.example.com:
+    container_name: peer1.BloodProcessing.example.com
+    image: hyperledger/fabric-peer:latest
+    environment:
+      - CORE_PEER_ID=peer1.BloodProcessing.example.com
+      - CORE_PEER_ADDRESS=peer1.BloodProcessing.example.com:8051
+      - CORE_PEER_LOCALMSPID=BloodProcessingMSP
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./crypto-config/peerOrganizations/BloodProcessing.example.com/peers/peer1.BloodProcessing.example.com/msp:/etc/hyperledger/fabric/msp
+        - ./crypto-config/peerOrganizations/BloodProcessing.example.com/peers/peer1.BloodProcessing.example.com/tls:/etc/hyperledger/fabric/tls
+    ports:
+      - 10051:9051
+    networks:
+      - basic
+
+  peer0.BloodBank.example.com:
+    container_name: peer0.BloodBank.example.com
+    image: hyperledger/fabric-peer:latest
+    environment:
+      - CORE_PEER_ID=peer0.BloodBank.example.com
+      - CORE_PEER_ADDRESS=peer0.BloodBank.example.com:7051
+      - CORE_PEER_LOCALMSPID=BloodBankMSP
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./crypto-config/peerOrganizations/BloodBank.example.com/peers/peer0.BloodBank.example.com/msp:/etc/hyperledger/fabric/msp
+        - ./crypto-config/peerOrganizations/BloodBank.example.com/peers/peer0.BloodBank.example.com/tls:/etc/hyperledger/fabric/tls
+    ports:
+      - 11051:11051
+    networks:
+      - basic
+
+  peer1.BloodBank.example.com:
+    container_name: peer1.BloodBank.example.com
+    image: hyperledger/fabric-peer:latest
+    environment:
+      - CORE_PEER_ID=peer1.BloodBank.example.com
+      - CORE_PEER_ADDRESS=peer1.BloodBank.example.com:8051
+      - CORE_PEER_LOCALMSPID=BloodBankMSP
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./crypto-config/peerOrganizations/BloodBank.example.com/peers/peer1.BloodBank.example.com/msp:/etc/hyperledger/fabric/msp
+        - ./crypto-config/peerOrganizations/BloodBank.example.com/peers/peer1.BloodBank.example.com/tls:/etc/hyperledger/fabric/tls
+    ports:
+      - 12051:11051
+    networks:
+      - basic
+
+  peer0.Hospitals.example.com:
+    container_name: peer0.Hospitals.example.com
+    image: hyperledger/fabric-peer:latest
+    environment:
+      - CORE_PEER_ID=peer0.Hospitals.example.com
+      - CORE_PEER_ADDRESS=peer0.Hospitals.example.com:7051
+      - CORE_PEER_LOCALMSPID=HospitalsMSP
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./crypto-config/peerOrganizations/Hospitals.example.com/peers/peer0.Hospitals.example.com/msp:/etc/hyperledger/fabric/msp
+        - ./crypto-config/peerOrganizations/Hospitals.example.com/peers/peer0.Hospitals.example.com/tls:/etc/hyperledger/fabric/tls
+    ports:
+      - 13051:13051
+    networks:
+      - basic
+
+  peer1.Hospitals.example.com:
+    container_name: peer1.Hospitals.example.com
+    image: hyperledger/fabric-peer:latest
+    environment:
+      - CORE_PEER_ID=peer1.Hospitals.example.com
+      - CORE_PEER_ADDRESS=peer1.Hospitals.example.com:8051
+      - CORE_PEER_LOCALMSPID=HospitalsMSP
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./crypto-config/peerOrganizations/Hospitals.example.com/peers/peer1.Hospitals.example.com/msp:/etc/hyperledger/fabric/msp
+        - ./crypto-config/peerOrganizations/Hospitals.example.com/peers/peer1.Hospitals.example.com/tls:/etc/hyperledger/fabric/tls
+    ports:
+      - 14051:13051
+    networks:
+      - basic
+
+  peer0.Transportation.example.com:
+    container_name: peer0.Transportation.example.com
+    image: hyperledger/fabric-peer:latest
+    environment:
+      - CORE_PEER_ID=peer0.Transportation.example.com
+      - CORE_PEER_ADDRESS=peer0.Transportation.example.com:7051
+      - CORE_PEER_LOCALMSPID=TransportationMSP
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./crypto-config/peerOrganizations/Transportation.example.com/peers/peer0.Transportation.example.com/msp:/etc/hyperledger/fabric/msp
+        - ./crypto-config/peerOrganizations/Transportation.example.com/peers/peer0.Transportation.example.com/tls:/etc/hyperledger/fabric/tls
+    ports:
+      - 15051:15051
+    networks:
+      - basic
+
+  peer1.Transportation.example.com:
+    container_name: peer1.Transportation.example.com
+    image: hyperledger/fabric-peer:latest
+    environment:
+      - CORE_PEER_ID=peer1.Transportation.example.com
+      - CORE_PEER_ADDRESS=peer1.Transportation.example.com:8051
+      - CORE_PEER_LOCALMSPID=TransportationMSP
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./crypto-config/peerOrganizations/Transportation.example.com/peers/peer1.Transportation.example.com/msp:/etc/hyperledger/fabric/msp
+        - ./crypto-config/peerOrganizations/Transportation.example.com/peers/peer1.Transportation.example.com/tls:/etc/hyperledger/fabric/tls
+    ports:
+      - 16051:15051
+    networks:
+      - basic
+
+  cli:
+    container_name: cli
+    image: hyperledger/fabric-tools:latest
+    tty: true
+    stdin_open: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - FABRIC_LOGGING_SPEC=DEBUG
+      - CORE_PEER_ID=cli
+      - CORE_PEER_ADDRESS=peer0.BloodCollection.example.com:7051
+      - CORE_PEER_LOCALMSPID=BloodCollectionMSP
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/BloodCollection.example.com/peers/peer0.BloodCollection.example.com/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/BloodCollection.example.com/peers/peer0.BloodCollection.example.com/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/BloodCollection.example.com/peers/peer0.BloodCollection.example.com/tls/ca.crt
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/BloodCollection.example.com/users/Admin@BloodCollection.example.com/msp
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: /bin/bash -c 'sleep 1000'
+    volumes:
+      - /var/run:/host/var/run/
+      - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
+      - ./../chaincode:/opt/gopath/src/github.com/chaincode
+      - ./config:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
+    networks:
+      - basic
+

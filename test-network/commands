@@ -1,0 +1,68 @@
+
+
+export CC_PACKAGE_ID=
+
+export CORE_PEER_TLS_ENABLED=true
+export CORE_PEER_LOCALMSPID="bloodcollectionMSP"
+export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/bloodcollection.example.com/peers/peer0.bloodcollection.example.com/tls/ca.crt
+export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/bloodcollection.example.com/users/Admin@bloodcollection.example.com/msp
+export CORE_PEER_ADDRESS=localhost:7051
+
+peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID channel1 --name bloodchain7 --version 1.0 --package-id $CC_PACKAGE_ID --sequence 1 --tls --cafile "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem" --init-required --collections-config ../chaincode/blockchain/chaincode/collections_config.json --signature-policy "OR('bloodcollectionMSP.member','bloodprocessingMSP.member','bloodbankMSP.member')"
+
+export CORE_PEER_TLS_ENABLED=true
+export CORE_PEER_LOCALMSPID="bloodprocessingMSP"
+export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/bloodprocessing.example.com/peers/peer0.bloodprocessing.example.com/tls/ca.crt
+export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/bloodprocessing.example.com/users/Admin@bloodprocessing.example.com/msp
+export CORE_PEER_ADDRESS=localhost:9051
+
+peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID channel1 --name bloodchain7 --version 1.0 --package-id $CC_PACKAGE_ID --sequence 1 --tls --cafile "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem" --init-required --collections-config ../chaincode/blockchain/chaincode/collections_config.json --signature-policy "OR('bloodcollectionMSP.member','bloodprocessingMSP.member','bloodbankMSP.member')"
+
+
+
+
+export CORE_PEER_TLS_ENABLED=true
+export CORE_PEER_LOCALMSPID="bloodbankMSP"
+export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/bloodbank.example.com/peers/peer0.bloodbank.example.com/tls/ca.crt
+export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/bloodbank.example.com/users/Admin@bloodbank.example.com/msp
+export CORE_PEER_ADDRESS=localhost:11051
+
+peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID channel1 --name bloodchain7 --version 1.0 --package-id $CC_PACKAGE_ID --sequence 1 --tls --cafile "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem" --init-required --collections-config ../chaincode/blockchain/chaincode/collections_config.json --signature-policy "OR('bloodcollectionMSP.member','bloodprocessingMSP.member','bloodbankMSP.member')"
+
+
+export CORE_PEER_TLS_ENABLED=true
+export CORE_PEER_LOCALMSPID="bloodcollectionMSP"
+export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/bloodcollection.example.com/peers/peer0.bloodcollection.example.com/tls/ca.crt
+export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/bloodcollection.example.com/users/Admin@bloodcollection.example.com/msp
+export CORE_PEER_ADDRESS=localhost:7051
+
+
+peer lifecycle chaincode checkcommitreadiness --channelID channel1 --name bloodchain7 --version 1.0 --sequence 1 --init-required --collections-config ../chaincode/blockchain/chaincode/collections_config.json --signature-policy "OR('bloodcollectionMSP.member','bloodprocessingMSP.member','bloodbankMSP.member')" --tls --cafile "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem" --output json
+
+
+ peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID channel1 --name bloodchain7 --version 1.0 --sequence 1 --init-required --collections-config ../chaincode/blockchain/chaincode/collections_config.json --signature-policy "OR('bloodcollectionMSP.member','bloodprocessingMSP.member','bloodbankMSP.member')" --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/bloodcollection.example.com/peers/peer0.bloodcollection.example.com/tls/ca.crt --peerAddresses localhost:8051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/bloodcollection.example.com/peers/peer1.bloodcollection.example.com/tls/ca.crt --peerAddresses localhost:9051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/bloodprocessing.example.com/peers/peer0.bloodprocessing.example.com/tls/ca.crt --peerAddresses localhost:10051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/bloodprocessing.example.com/peers/peer1.bloodprocessing.example.com/tls/ca.crt --peerAddresses localhost:11051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/bloodbank.example.com/peers/peer0.bloodbank.example.com/tls/ca.crt --peerAddresses localhost:12051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/bloodbank.example.com/peers/peer1.bloodbank.example.com/tls/ca.crt
+
+
+
+peer lifecycle chaincode querycommitted --channelID channel1 --name bloodchain7 --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+
+peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C channel1 -n bloodchain7 --isInit -c'{"function":"createDonor","Args":["A1","ALI","Trans","AB+","2018-04-15","0918290182801","0307665155165","aba@aba.com","180","100","Punjab","GRW","yes"]}'
+
+ peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C channel1 -n bloodchain7  -c'{"function":"createDonor","Args":["A1","ALI","Trans","AB+","2018-04-15","0918290182801","0307665155165","aba@aba.com","180","140","Punjab","GRW","true"]}'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,145 @@
+name: fabric_test
+version: "2.5"
+
+caliper:
+  blockchain: fabric
+
+channels:
+  - channelName: channel1
+    contractName: bloodchain
+    orderers:
+      - orderer.example.com
+    peers:
+      - peer0.bloodcollection.example.com
+      - peer1.bloodcollection.example.com
+      - peer0.bloodprocessing.example.com
+      - peer1.bloodprocessing.example.com
+      - peer0.bloodbank.example.com
+      - peer1.bloodbank.example.com
+
+  - channelName: channel2
+    contractName: bloodchain
+    orderers:
+      - orderer2.example.com
+    peers:
+      - peer0.hospital.example.com
+      - peer1.hospital.example.com
+      - peer0.transportation.example.com
+      - peer1.transportation.example.com
+      - peer0.bloodbank.example.com
+      - peer1.bloodbank.example.com
+orderers:
+  orderer.example.com:
+    url: grpc://localhost:7050
+    tlsCACerts:
+      path: ${PWD}/../test-network/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+    grpcOptions:
+      ssl-target-name-override: orderer.example.com
+
+  orderer2.example.com:
+    url: grpc://localhost:8050
+    tlsCACerts:
+      path: ${PWD}/../channel2-network/organizations/ordererOrganizations/example.com/orderers/orderer2.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+    grpcOptions:
+      ssl-target-name-override: orderer2.example.com
+
+peers:
+  peer0.bloodcollection.example.com:
+    url: grpc://localhost:7051
+    tlsCACerts:
+      path: ${PWD}/../test-network/organizations/peerOrganizations/bloodcollection.example.com/peers/peer0.bloodcollection.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: peer0.bloodcollection.example.com
+
+  peer1.bloodcollection.example.com:
+    url: grpc://localhost:8051
+    tlsCACerts:
+      path: ${PWD}/../test-network/organizations/peerOrganizations/bloodcollection.example.com/peers/peer1.bloodcollection.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: peer1.bloodcollection.example.com
+
+  peer0.bloodprocessing.example.com:
+    url: grpc://localhost:9051
+    tlsCACerts:
+      path: ${PWD}/../test-network/organizations/peerOrganizations/bloodprocessing.example.com/peers/peer0.bloodprocessing.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: peer0.bloodprocessing.example.com
+
+  peer1.bloodprocessing.example.com:
+    url: grpc://localhost:10051
+    tlsCACerts:
+      path: ${PWD}/../test-network/organizations/peerOrganizations/bloodprocessing.example.com/peers/peer1.bloodprocessing.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: peer1.bloodprocessing.example.com
+
+  peer0.bloodbank.example.com:
+    url: grpc://localhost:11051
+    tlsCACerts:
+      path: ${PWD}/../test-network/organizations/peerOrganizations/bloodbank.example.com/peers/peer0.bloodbank.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: peer0.bloodbank.example.com
+
+  peer1.bloodbank.example.com:
+    url: grpc://localhost:12051
+    tlsCACerts:
+      path: ${PWD}/../test-network/organizations/peerOrganizations/bloodbank.example.com/peers/peer1.bloodbank.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: peer1.bloodbank.example.com
+
+  peer0.hospital.example.com:
+    url: grpc://localhost:13051
+    tlsCACerts:
+      path: ${PWD}/../channel2-network/organizations/peerOrganizations/hospital.example.com/peers/peer0.hospital.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: peer0.hospital.example.com
+
+  peer1.hospital.example.com:
+    url: grpc://localhost:14051
+    tlsCACerts:
+      path: ${PWD}/../channel2-network/organizations/peerOrganizations/hospital.example.com/peers/peer1.hospital.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: peer1.hospital.example.com
+
+  peer0.transportation.example.com:
+    url: grpc://localhost:15051
+    tlsCACerts:
+      path: ${PWD}/../channel2-network/organizations/peerOrganizations/transportation.example.com/peers/peer0.transportation.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: peer0.transportation.example.com
+
+  peer1.transportation.example.com:
+    url: grpc://localhost:16051
+    tlsCACerts:
+      path: ${PWD}/../channel2-network/organizations/peerOrganizations/transportation.example.com/peers/peer1.transportation.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: peer1.transportation.example.com
+
+certificateAuthorities:
+  ca_bloodcollection:
+    url: https://localhost:7054
+    caName: ca-bloodcollection
+    tlsCACerts:
+      path: ${pwd}/../test-network/organizations/peerOrganizations/bloodcollection.example.com/tlsca/tlsca.bloodcollection.example.com-cert.pem
+
+  ca_bloodprocessing:
+    url: https://localhost:8054
+    caName: ca-bloodprocessing
+    tlsCACerts:
+      path: ${pwd}/../test-network/organizations/peerOrganizations/bloodprocessing.example.com/tlsca/tlsca.bloodprocessing.example.com-cert.pem
+
+  ca_bloodbank:
+    url: https://localhost:11054
+    caName: ca-bloodbank
+    tlsCACerts:
+      path: ${pwd}/../test-network/organizations/peerOrganizations/bloodbank.example.com/tlsca/tlsca.bloodbank.example.com-cert.pem
+
+  ca_hospital:
+    url: https://localhost:12054
+    caName: ca-hospital
+    tlsCACerts:
+      path: ${pwd}/../channel2-network/organizations/peerOrganizations/hospital.example.com/tlsca/tlsca.hospital.example.com-cert.pem
+  ca_transportation:
+    url: https://localhost:13054
+    caName: ca-transportation
+    tlsCACerts:
+      path: ${pwd}/../channel2-network/organizations/peerOrganizations/transportation.example.com/tlsca/tlsca.transportation.example.com-cert.pem

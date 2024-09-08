@@ -1,0 +1,62 @@
+OrdererOrgs:
+  # ---------------------------------------------------------------------------
+  # Orderer
+  # ---------------------------------------------------------------------------
+  - Name: Orderer
+    Domain: example.com
+    EnableNodeOUs: true
+
+
+    # ---------------------------------------------------------------------------
+    # "Specs" - See PeerOrgs for complete description
+    # ---------------------------------------------------------------------------
+    Specs:
+      - Hostname: orderer
+        SANS:
+          - localhost
+      - Hostname: orderer2
+        SANS:
+          - localhost
+      - Hostname: orderer3
+        SANS:
+          - localhost
+      - Hostname: orderer4
+        SANS:
+          - localhost
+
+PeerOrgs:
+  - Name: BloodCollection
+    Domain: BloodCollection.example.com
+    Template:
+      Count: 2
+    Users:
+      Count: 1
+
+  - Name: BloodProcessing
+    Domain: BloodProcessing.example.com
+    Template:
+      Count: 2
+    Users:
+      Count: 1
+
+  - Name: BloodBank
+    Domain: BloodBank.example.com
+    Template:
+      Count: 2
+    Users:
+      Count: 1
+
+  - Name: Hospitals
+    Domain: Hospitals.example.com
+    Template:
+      Count: 2
+    Users:
+      Count: 1
+
+  - Name: Transportation
+    Domain: Transportation.example.com
+    Template:
+      Count: 2
+    Users:
+      Count: 1
+
